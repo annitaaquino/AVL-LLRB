@@ -25,7 +25,7 @@ Requer apenas `g++` (C++11)
 ./testes      # testes e comparação AVL x Rubro-Negra
 ```
 
-`g++ -std=c++11 -o arvores main.cpp avl.cpp rubronegra.cpp`
+`g++ -std=c++11 -Wall -Wextra -O2 -o arvores main.cpp avl.cpp rubronegra.cpp `
 
 ## Funcionalidades
 
@@ -52,9 +52,9 @@ Escolha a arvore (1 = AVL, 2 = Rubro-Negra): 2
 - **Remoção com 2 filhos:** troca pelo sucessor em ordem (menor da subárvore direita).
 - **AVL:** cada nó guarda sua altura; após inserir/remover, a volta da recursão recalcula
   altura e fb e aplica LL/RR (rotação simples) ou LR/RL (duas simples).
-- **Rubro-Negra:** foi usada a variante **LLRB** (Sedgewick), equivalente a uma árvore 2-3, por
-  ser a mais simples de implementar. Ligações vermelhas ficam sempre à esquerda. Nó novo
-  entra vermelho; a correção usa 3 regras (rotação esquerda, rotação direita, troca de cores).
+- **Rubro-Negra:** foi usada a variante **LLRB** por ser mais simples de implementar. 
+  Ligações vermelhas ficam sempre à esquerda. Nó novo entra vermelho; a correção usa 
+  3 regras (rotação esquerda, rotação direita, troca de cores).
 - **Contadores:** `rotacoes()` conta rotações **simples** (uma rotação dupla conta 2);
   `recolorizacoes()` conta trocas de cores (só na Rubro-Negra).
 - **Altura:** contada em nós (vazia = 0, folha = 1).
