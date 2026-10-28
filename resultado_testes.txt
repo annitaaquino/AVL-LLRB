@@ -1,0 +1,31 @@
+
+=== Testes: AVL ===
+ - arvore vazia e com 1 elemento
+ - insercao crescente (n=1000), validando a cada passo
+ - insercao decrescente (n=1000), validando a cada passo
+ - insercao aleatoria (n=1000), validando a cada passo
+ - busca de existentes e inexistentes
+ - remocao: folha, 1 filho, 2 filhos, raiz, inexistente
+ - 20000 operacoes aleatorias comparadas com std::set
+
+=== Testes: Rubro-Negra (LLRB) ===
+ - arvore vazia e com 1 elemento
+ - insercao crescente (n=1000), validando a cada passo
+ - insercao decrescente (n=1000), validando a cada passo
+ - insercao aleatoria (n=1000), validando a cada passo
+ - busca de existentes e inexistentes
+ - remocao: folha, 1 filho, 2 filhos, raiz, inexistente
+ - 20000 operacoes aleatorias comparadas com std::set
+
+=== COMPARACAO AVL x RUBRO-NEGRA (mesmos dados, n = 1000, remove metade) ===
+Formato: valor apos insercao / valor da fase de remocao (h = altura final)
+log2(1001) = 9.97
+crescente              | AVL h=10/10 rot=  990/  85 | RN h=10/12 rot=  991/2007 cor=  985/3400
+decrescente            | AVL h=10/10 rot=  990/  89 | RN h=15/12 rot=  985/1879 cor=  985/4483
+aleatoria              | AVL h=12/11 rot=  690/ 198 | RN h=14/12 rot= 1162/1993 cor=  747/4087
+
+Media de 30 sequencias aleatorias distintas (n = 1000, remove 500):
+  AVL: altura media 12.00 (max 12), rotacoes ins 688.67, rem 189.43
+  RN : altura media 13.60 (max 15), rotacoes ins 1168.67, rem 2071.50, recolor. ins 740.13, rem 3675.90
+
+Resultado: 174/174 verificacoes ok
