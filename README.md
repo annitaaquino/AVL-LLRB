@@ -1,7 +1,7 @@
 # Amazon Engineering Challenge — Árvores AVL e Rubro-Negra (C++)
 
-**Autor:** _(Annita Aquino Freitas)_
-**Matrícula:** _(20250029891)_
+**Autor:** _Annita Aquino Freitas_
+**Matrícula:** _20250029891_
 
 
 Protótipo para registrar, localizar e remover identificadores de encomendas (inteiros)
