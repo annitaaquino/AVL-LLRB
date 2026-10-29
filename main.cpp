@@ -28,7 +28,7 @@ int main() {
 
     int op;
     do {
-        cout << "\n1) Inserir  2) Remover  3) Buscar  4) Em ordem\n5) Imprimir  6) Altura/Rotacao/Validacao  0) Sair\n";
+        cout << "\n1) Inserir\n2) Remover\n3) Buscar\n4) Em ordem\n5) Imprimir\n6) Altura/Rotacao/Validacao\n0) Sair\n";
         op = lerInt("> ");
         if (op == 1) {
             int x = lerInt("Id da encomenda: ");

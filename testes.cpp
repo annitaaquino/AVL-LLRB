@@ -7,21 +7,22 @@
 #include <random>
 #include <cmath>
 #include <sstream>
+#include <chrono>
 #include "AVL.hpp"
 #include "RubroNegra.hpp"
 using namespace std;
- 
+
 static int total = 0, falhas = 0;
 #define CHECK(cond, msg) do { total++; if (!(cond)) { falhas++; \
     cout << "  [FALHOU] " << msg << "  (linha " << __LINE__ << ")\n"; } } while (0)
- 
+
 static Arvore* nova(int tipo) { return tipo == 0 ? (Arvore*)new AVL() : (Arvore*)new RubroNegra(); }
- 
+
 static vector<int> conteudo(const Arvore& t) { vector<int> v; t.emOrdem(v); return v; }
- 
+
 // Limite teórico de altura (em nós): AVL <= 1,44 log2(n+2); LLRB <= 2 log2(n+1). Usa-se o maior (2 log2(n+1)).
 static bool alturaOk(const Arvore& t, size_t n) { return t.altura() <= 2 * log2((double)n + 1) + 1e-9; }
- 
+
 static vector<int> seq(const string& tipo, int n, unsigned seed = 42) {
     vector<int> v;
     for (int i = 1; i <= n; i++) v.push_back(i);
@@ -29,8 +30,8 @@ static vector<int> seq(const string& tipo, int n, unsigned seed = 42) {
     if (tipo == "aleatoria") { mt19937 g(seed); shuffle(v.begin(), v.end(), g); }
     return v;
 }
- 
-// 1. vazia e um elemento
+
+// ---------- 1. vazia e um elemento ----------
 static void testeVaziaUmElemento(Arvore& t) {
     cout << " - arvore vazia e com 1 elemento\n";
     CHECK(t.altura() == 0, "vazia: altura 0");
@@ -47,8 +48,8 @@ static void testeVaziaUmElemento(Arvore& t) {
     CHECK(t.altura() == 0 && t.validar() && conteudo(t).empty(), "1 elem: volta a vazia");
     CHECK(!t.remover(7), "vazia de novo: remover false");
 }
- 
-// 2. inserção crescente/decrescente/aleatória
+
+// ---------- 2. inserção crescente/decrescente/aleatória ----------
 static void testeInsercao(Arvore& t, const string& tipo) {
     cout << " - insercao " << tipo << " (n=1000), validando a cada passo\n";
     vector<int> v = seq(tipo, 1000);
@@ -62,8 +63,8 @@ static void testeInsercao(Arvore& t, const string& tipo) {
     CHECK(conteudo(t) == esperado, tipo + ": em ordem == 1..1000");
     CHECK(alturaOk(t, 1000), tipo + ": altura dentro do limite teorico");
 }
- 
-// 3. busca 
+
+// ---------- 3. busca ----------
 static void testeBusca(Arvore& t) {
     cout << " - busca de existentes e inexistentes\n";
     for (int i = 1; i <= 100; i++) t.inserir(i * 2);          // pares 2..200
@@ -75,8 +76,8 @@ static void testeBusca(Arvore& t) {
     CHECK(ok, "nenhum inexistente encontrado");
     CHECK(!t.buscar(-5) && !t.buscar(0) && !t.buscar(1000000), "limites inexistentes");
 }
- 
-// 4. remoção com diferentes configurações
+
+// ---------- 4. remoção com diferentes configurações ----------
 static void remover1(Arvore& t, int x, const string& desc, vector<int>& ref) {
     bool r = t.remover(x);
     ref.erase(remove(ref.begin(), ref.end(), x), ref.end());
@@ -85,7 +86,7 @@ static void remover1(Arvore& t, int x, const string& desc, vector<int>& ref) {
     CHECK(conteudo(t) == ref, desc + ": demais chaves preservadas");
     CHECK(t.validar(), desc + ": propriedades validas");
 }
- 
+
 static void testeRemocao(Arvore& t) {
     cout << " - remocao: folha, 1 filho, 2 filhos, raiz, inexistente\n";
     int dados[] = {50, 30, 70, 20, 40, 60, 80, 10, 35, 45, 65, 90, 5, 15};
@@ -108,8 +109,8 @@ static void testeRemocao(Arvore& t) {
     for (size_t i = 0; i < resto.size(); i++) ok = ok && t.remover(resto[i]) && t.validar();
     CHECK(ok && conteudo(t).empty() && t.altura() == 0, "remover todos ate esvaziar");
 }
- 
-// 5. aleatório contra std::set
+
+// ---------- 5. aleatório contra std::set ----------
 static void testeAleatorio(Arvore& t, unsigned seed) {
     cout << " - 20000 operacoes aleatorias comparadas com std::set\n";
     mt19937 g(seed);
@@ -128,10 +129,10 @@ static void testeAleatorio(Arvore& t, unsigned seed) {
     CHECK(alturas, "altura sempre dentro do limite teorico");
     CHECK(conteudo(t) == vector<int>(ref.begin(), ref.end()), "conteudo final identico ao std::set");
 }
- 
-// 6. comparação
+
+// ---------- 6. comparação ----------
 struct Medida { int altIns, altRem; long rotIns, rotRem, corIns, corRem; };
- 
+
 static Medida medir(int tipo, const vector<int>& ins, const vector<int>& rem) {
     Arvore* t = nova(tipo);
     Medida m = {0, 0, 0, 0, 0, 0};
@@ -143,7 +144,7 @@ static Medida medir(int tipo, const vector<int>& ins, const vector<int>& rem) {
     delete t;
     return m;
 }
- 
+
 static void linha(const string& nome, const Medida& a, const Medida& r) {
     cout << left << setw(22) << nome << right
          << " | AVL h=" << setw(2) << a.altIns << "/" << setw(2) << a.altRem
@@ -152,7 +153,7 @@ static void linha(const string& nome, const Medida& a, const Medida& r) {
          << " rot=" << setw(5) << r.rotIns << "/" << setw(4) << r.rotRem
          << " cor=" << setw(5) << r.corIns << "/" << setw(4) << r.corRem << "\n";
 }
- 
+
 static void comparacao() {
     cout << "\n=== COMPARACAO AVL x RUBRO-NEGRA (mesmos dados, n = 1000, remove metade) ===\n";
     cout << "Formato: valor apos insercao / valor da fase de remocao (h = altura final)\n";
@@ -181,7 +182,58 @@ static void comparacao() {
     cout << "  RN : altura media " << rH[0] / 30 << " (max " << maxR << "), rotacoes ins " << rR[0] / 30
          << ", rem " << rR[1] / 30 << ", recolor. ins " << rC[0] / 30 << ", rem " << rC[1] / 30 << "\n";
 }
- 
+
+// ---------- 7. tempo de execucao ----------
+typedef chrono::steady_clock Rel;
+static double ms(Rel::time_point a, Rel::time_point b) {
+    return chrono::duration<double, milli>(b - a).count();
+}
+
+struct Tempo { double ins, bus, rem; };
+
+// Mede inserir tudo, buscar tudo (ordem aleatoria) e remover metade. Repete e guarda o MELHOR tempo
+// de cada fase (reduz ruido do sistema). Validacao fica fora da medicao.
+static Tempo medirTempo(int tipo, const vector<int>& ins, const vector<int>& bus, const vector<int>& rem, int reps) {
+    Tempo m = {1e18, 1e18, 1e18};
+    for (int r = 0; r < reps; r++) {
+        Arvore* t = nova(tipo);
+        Rel::time_point t0 = Rel::now();
+        for (size_t i = 0; i < ins.size(); i++) t->inserir(ins[i]);
+        Rel::time_point t1 = Rel::now();
+        size_t achou = 0;
+        for (size_t i = 0; i < bus.size(); i++) achou += t->buscar(bus[i]);
+        Rel::time_point t2 = Rel::now();
+        for (size_t i = 0; i < rem.size(); i++) t->remover(rem[i]);
+        Rel::time_point t3 = Rel::now();
+        CHECK(achou == bus.size(), "tempo: todas as buscas encontram a chave");
+        CHECK(t->validar(), string("tempo: ") + t->nome() + " valida ao final");
+        delete t;
+        m.ins = min(m.ins, ms(t0, t1)); m.bus = min(m.bus, ms(t1, t2)); m.rem = min(m.rem, ms(t2, t3));
+    }
+    return m;
+}
+
+static void comparacaoTempo() {
+    const int N = 100000;
+    cout << "\n=== TEMPO DE EXECUCAO (n = " << N << ", melhor de 5 execucoes, em ms) ===\n";
+    cout << "Fases: inserir n chaves | buscar n chaves (ordem aleatoria) | remover n/2 chaves\n";
+    cout << left << setw(13) << "entrada" << right
+         << " | AVL ins    busca   rem    | RN ins     busca   rem    | RN/AVL (ins, busca, rem)\n";
+    string tipos[] = {"crescente", "decrescente", "aleatoria"};
+    vector<int> bus = seq("aleatoria", N, 99), rem = seq("aleatoria", N, 7);
+    rem.resize(N / 2);
+    for (int k = 0; k < 3; k++) {
+        vector<int> ins = seq(tipos[k], N);
+        Tempo a = medirTempo(0, ins, bus, rem, 5), r = medirTempo(1, ins, bus, rem, 5);
+        cout << left << setw(13) << tipos[k] << right << fixed << setprecision(2)
+             << " | " << setw(8) << a.ins << setw(8) << a.bus << setw(8) << a.rem
+             << " | " << setw(8) << r.ins << setw(8) << r.bus << setw(8) << r.rem
+             << " | " << setw(5) << r.ins / a.ins << "x " << setw(5) << r.bus / a.bus << "x "
+             << setw(5) << r.rem / a.rem << "x\n";
+    }
+    cout << "(Tempos dependem da maquina; o que importa e a razao entre as duas arvores.)\n";
+}
+
 int main() {
     for (int tipo = 0; tipo < 2; tipo++) {
         Arvore* ref = nova(tipo);
@@ -195,6 +247,7 @@ int main() {
         { Arvore* t = nova(tipo); testeAleatorio(*t, 12345); delete t; }
     }
     comparacao();
+    comparacaoTempo();
     cout << "\nResultado: " << (total - falhas) << "/" << total << " verificacoes ok\n";
     return falhas ? 1 : 0;
 }

@@ -1,6 +1,8 @@
 # Amazon Engineering Challenge — Árvores AVL e Rubro-Negra (C++)
 
-**Autor:** _(Annita Aquino Freitas_)
+**Autor:** _(Annita Aquino Freitas)_
+**Matrícula:** _(20250029891)_
+
 
 Protótipo para registrar, localizar e remover identificadores de encomendas (inteiros)
 durante a Black Friday, com duas árvores balanceadas implementadas.
@@ -64,6 +66,10 @@ Escolha a arvore (1 = AVL, 2 = Rubro-Negra): 2
 
 ## Testes
 
+Para compilar a parte dos testes use o seguinte comando:
+
+`g++ -std=c++11 -Wall -Wextra -O2 -o testes testes.cpp avl.cpp rubronegra.cpp `
+
 `./testes` executa, nas duas árvores (AVL e Rubro-Negra LLRB), os seguintes grupos de teste:
 
 - **Árvore vazia e com 1 elemento:** busca e remoção em árvore vazia, inserção de um elemento,
@@ -75,11 +81,19 @@ Escolha a arvore (1 = AVL, 2 = Rubro-Negra): 2
 - **Remoção** de folha, de nó com 1 filho, de nó com 2 filhos, da raiz e de elemento inexistente
   (que não altera a árvore). Em seguida, todos os elementos são removidos até a árvore esvaziar,
   validando as propriedades a cada remoção.
-- **Teste aleatório:** 20 000 operações (inserir, remover, buscar) comparadas com um `std::set`,
-  conferindo os valores retornados, as propriedades de balanceamento, o limite de altura a cada
-  operação e o conteúdo final.
+- **Teste aleatório:** 20 000 operações (inserir, remover, buscar) comparadas com um `std::set`
+  (chaves de 0 a 999), conferindo os valores retornados, as propriedades de balanceamento, o limite
+  de altura a cada operação e o conteúdo final.
 
-No final, o programa **compara AVL e Rubro-Negra com os mesmos dados**: inserção de 1000 chaves em
-ordem crescente, decrescente e aleatória, seguida da remoção das mesmas 500 chaves nas duas árvores.
-Ele mostra altura, rotações (simples) e recolorações, e também a média de 30 sequências aleatórias
-diferentes. Resultado atual: **174/174 verificações ok**. A saída completa está em `resultado_testes.txt`.
+No final, o programa **compara AVL e Rubro-Negra com os mesmos dados**, em dois critérios:
+
+- **Altura e ajustes** (n = 1000): inserção de 1000 chaves em ordem crescente, decrescente e
+  aleatória, seguida da remoção das mesmas 500 chaves nas duas árvores. Mostra altura, rotações
+  (simples) e recolorações, e também a média de 30 sequências aleatórias diferentes.
+- **Tempo de execução** (n = 100 000): mede, em milissegundos, a inserção de n chaves, a busca de
+  n chaves em ordem aleatória e a remoção de n/2 chaves, nas três ordens de entrada. Cada fase é
+  repetida 5 vezes e se guarda o melhor tempo, para reduzir ruído do sistema. A validação das
+  propriedades fica fora da medição. O programa também imprime a razão entre os tempos
+  (Rubro-Negra / AVL), pois os valores absolutos dependem da máquina.
+
+Resultado atual: **234/234 verificações ok**. A saída completa está em `resultado_testes.txt`.

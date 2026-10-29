@@ -28,4 +28,12 @@ Media de 30 sequencias aleatorias distintas (n = 1000, remove 500):
   AVL: altura media 12.00 (max 12), rotacoes ins 688.67, rem 189.43
   RN : altura media 13.60 (max 15), rotacoes ins 1168.67, rem 2071.50, recolor. ins 740.13, rem 3675.90
 
-Resultado: 174/174 verificacoes ok
+=== TEMPO DE EXECUCAO (n = 100000, melhor de 5 execucoes, em ms) ===
+Fases: inserir n chaves | buscar n chaves (ordem aleatoria) | remover n/2 chaves
+entrada       | AVL ins    busca   rem    | RN ins     busca   rem    | RN/AVL (ins, busca, rem)
+crescente     |    12.30    8.47   17.40 |    20.27    9.03   29.25 |  1.65x  1.07x  1.68x
+decrescente   |    13.54    8.66   17.21 |    32.54   10.36   32.05 |  2.40x  1.20x  1.86x
+aleatoria     |    28.69    8.16   17.42 |    42.22    9.84   32.31 |  1.47x  1.21x  1.86x
+(Tempos dependem da maquina; o que importa e a razao entre as duas arvores.)
+
+Resultado: 234/234 verificacoes ok
